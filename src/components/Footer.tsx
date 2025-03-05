@@ -157,7 +157,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-blue-400 mr-3" />
-                <span className="text-gray-400">contact@techai.com.cn</span>
+                <span className="text-gray-400">liu@sienovo.cn</span>
               </li>
             </ul>
           </div>
@@ -165,7 +165,7 @@ const Footer = () => {
 
         <div className="pt-8 border-t border-gray-800 text-center md:flex md:justify-between md:items-center">
           <p className="text-gray-500 mb-4 md:mb-0">
-            © 2025 信迈智科 Sienovo. 保留所有权利.
+            © 2025 信迈智科 Sienovo. 保留所有权利. 粤ICP备18109958号
           </p>
           <div className="flex flex-wrap justify-center md:justify-end space-x-6">
             <a
