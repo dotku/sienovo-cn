@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown, Search } from "lucide-react";
 
 const Header = () => {
@@ -35,7 +35,7 @@ const Header = () => {
       name: "产品中心",
       href: "#products",
       submenu: [
-        { name: "AI决策系统", href: "#" },
+        { name: "AI 决策系统", href: "#" },
         { name: "大数据平台", href: "#" },
         { name: "智能文档管理", href: "#" },
         { name: "知识图谱构建", href: "#" },
