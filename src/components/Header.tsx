@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, Search } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -56,8 +56,18 @@ const Header = () => {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
             <div className="text-2xl font-bold flex items-center">
-              <span className="text-3xl mr-2 text-white">信迈智科</span>
-              <span className="text-white">Sienovo</span>
+              <span
+                className={`text-3xl mr-2 ${
+                  isScrolled ? "text-gray-800" : "text-white"
+                }`}
+              >
+                信迈智科
+              </span>
+              <span
+                className={`${isScrolled ? "text-gray-800" : "text-white"}`}
+              >
+                SIENOVO
+              </span>
             </div>
           </div>
 
@@ -67,7 +77,11 @@ const Header = () => {
               <div key={item.name} className="relative group">
                 <a
                   href={item.href}
-                  className="text-white hover:text-blue-200 font-medium flex items-center"
+                  className={`${
+                    isScrolled
+                      ? "text-gray-800 hover:text-blue-700"
+                      : "text-white hover:text-blue-200"
+                  } font-medium flex items-center`}
                 >
                   {item.name}
                   {item.submenu && <ChevronDown className="ml-1 h-4 w-4" />}
@@ -93,12 +107,11 @@ const Header = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <button className="text-white hover:text-blue-200">
-              <Search className="h-5 w-5" />
-            </button>
-            <button className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition-colors">
-              联系我们
-            </button>
+            <a href="#contact" className="text-white hover:text-blue-200">
+              <button className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition-colors">
+                联系我们
+              </button>
+            </a>
           </div>
 
           {/* Mobile menu button */}
@@ -145,9 +158,6 @@ const Header = () => {
               </div>
             ))}
             <div className="pt-4 flex justify-between items-center">
-              <button className="text-gray-800 hover:text-blue-700">
-                <Search className="h-5 w-5" />
-              </button>
               <button className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition-colors">
                 联系我们
               </button>

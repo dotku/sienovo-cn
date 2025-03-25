@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",
+    "@vercel/node": "^5.1.14",
     "lucide-react": "^0.344.0",
+    "openai": "^4.89.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

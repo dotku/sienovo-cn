@@ -29,12 +29,16 @@ const Hero = () => {
             助力国家机构数字化转型与智能化升级。
           </p>
           <div className="flex flex-wrap gap-4">
-            <button className="bg-white text-blue-700 px-6 py-3 rounded-md font-medium hover:bg-blue-50 transition-colors flex items-center">
-              了解解决方案 <ArrowRight className="ml-2 h-5 w-5" />
-            </button>
-            <button className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-md font-medium hover:bg-white/10 transition-colors">
-              预约演示
-            </button>
+            <a href="#solutions">
+              <button className="bg-white text-blue-700 px-6 py-3 rounded-md font-medium hover:bg-blue-50 transition-colors flex items-center">
+                了解解决方案 <ArrowRight className="ml-2 h-5 w-5" />
+              </button>
+            </a>
+            <a href="#contact">
+              <button className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-md font-medium hover:bg-white/10 transition-colors">
+                预约演示
+              </button>
+            </a>
           </div>
         </div>
       </div>

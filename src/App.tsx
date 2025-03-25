@@ -6,6 +6,7 @@ import Clients from "./components/Clients";
 import Products from "./components/Products";
 import News from "./components/News";
 import Footer from "./components/Footer";
+import Chatbot from "./components/Chatbot";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Products />
       <News />
       <Footer />
+      <Chatbot />
     </div>
   );
 }
