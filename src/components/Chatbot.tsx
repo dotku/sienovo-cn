@@ -1,9 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { MessageCircle, Send, X } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
+}
+
+interface CodeProps extends React.HTMLAttributes<HTMLElement> {
+  inline?: boolean;
+  className?: string;
 }
 
 export const Chatbot = () => {
@@ -15,17 +22,34 @@ export const Chatbot = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  // Prevent body scroll when chat is open on mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const chatbot = document.getElementById("chatbot");
+      if (chatbot && !chatbot.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     if (isOpen && window.innerWidth < 640) {
-      // Only for mobile
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -39,7 +63,7 @@ export const Chatbot = () => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage = { role: "user" as const, content: input };
+    const userMessage: Message = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
@@ -51,7 +75,10 @@ export const Chatbot = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          messages: [...messages, userMessage],
+          messages: [
+            ...messages,
+            userMessage,
+          ],
         }),
       });
 
@@ -60,20 +87,18 @@ export const Chatbot = () => {
       }
 
       const data = await response.json();
-      const assistantMessage = {
-        role: "assistant" as const,
+      const assistantMessage: Message = {
+        role: "assistant",
         content: data.message || "抱歉，我现在无法回答这个问题。",
       };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error("Error:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "抱歉，出现了一些技术问题。请稍后再试。",
-        },
-      ]);
+      const errorMessage: Message = {
+        role: "assistant",
+        content: "抱歉，发生了错误。请稍后再试。",
+      };
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -159,13 +184,49 @@ export const Chatbot = () => {
                       } items-start`}
                     >
                       <div
-                        className={`max-w-[85%] px-3.5 py-2 sm:p-3 rounded-2xl whitespace-pre-wrap text-sm sm:text-base leading-relaxed ${
+                        className={`max-w-[85%] px-3.5 py-2 sm:p-3 rounded-2xl text-sm sm:text-base leading-relaxed ${
                           message.role === "user"
                             ? "bg-blue-700 text-white rounded-br-sm"
                             : "bg-gray-100 text-gray-800 rounded-bl-sm"
                         }`}
                       >
-                        {message.content}
+                        {message.role === "assistant" ? (
+                          <ReactMarkdown 
+                            remarkPlugins={[remarkGfm]}
+                            className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-pre:my-2"
+                            components={{
+                              p: ({ children, ...props }) => <p className="my-1" {...props}>{children}</p>,
+                              ul: ({ children, ...props }) => <ul className="my-1 ml-4" {...props}>{children}</ul>,
+                              ol: ({ children, ...props }) => <ol className="my-1 ml-4" {...props}>{children}</ol>,
+                              li: ({ children, ...props }) => <li className="my-0.5" {...props}>{children}</li>,
+                              a: ({ children, href, ...props }) => (
+                                <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline" {...props}>
+                                  {children}
+                                </a>
+                              ),
+                              pre: ({ children, ...props }) => (
+                                <pre className="bg-gray-800 text-white p-3 rounded-md overflow-x-auto my-2" {...props}>
+                                  {children}
+                                </pre>
+                              ),
+                              code: ({ inline, className, children, ...props }: CodeProps) => {
+                                return !inline ? (
+                                  <code className={className} {...props}>
+                                    {children}
+                                  </code>
+                                ) : (
+                                  <code className="bg-gray-200 px-1 py-0.5 rounded text-sm" {...props}>
+                                    {children}
+                                  </code>
+                                );
+                              }
+                            }}
+                          >
+                            {message.content}
+                          </ReactMarkdown>
+                        ) : (
+                          message.content
+                        )}
                       </div>
                     </div>
                   ))}
