@@ -64,7 +64,7 @@ const Solutions = () => {
         "文化传播平台",
         "文化数据分析",
       ],
-      url: "https://www.fujian.gov.cn/zwgk/ztzl/sxzygwzxsgzx/sdjj/wvjj/202402/t20240207_6393711.htm",
+      url: "https://fujian-west-coast-culture.sienovo.cn",
     },
   ];
 
