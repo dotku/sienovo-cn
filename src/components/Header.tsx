@@ -150,7 +150,18 @@ const Header = () => {
             })}
           </nav>
 
-          <div className="hidden md:flex items-center shrink-0">
+          <div className="hidden md:flex items-center shrink-0 gap-2 lg:gap-3">
+            <a
+              href="https://intl.sienovo.cn"
+              aria-label="Switch to English site"
+              className={`text-sm lg:text-base font-medium whitespace-nowrap px-2 py-1 rounded transition-colors ${
+                isScrolled
+                  ? "text-gray-700 hover:text-blue-700"
+                  : "text-white/90 hover:text-white"
+              }`}
+            >
+              EN
+            </a>
             <a href="#contact">
               <button
                 className={`px-3 py-1.5 lg:px-4 lg:py-2 rounded-md transition-colors text-sm lg:text-base font-medium whitespace-nowrap ${
@@ -212,10 +223,18 @@ const Header = () => {
                 )}
               </div>
             ))}
+            <a
+              href="https://intl.sienovo.cn"
+              className="block px-3 py-2 text-base font-medium text-gray-900 hover:bg-blue-50 hover:text-blue-700 rounded-md border-t border-gray-100 mt-2 pt-3"
+            >
+              English (intl.sienovo.cn) →
+            </a>
             <div className="pt-4 flex justify-between items-center">
-              <button className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition-colors">
-                联系我们
-              </button>
+              <a href="#contact">
+                <button className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition-colors">
+                  联系我们
+                </button>
+              </a>
             </div>
           </div>
         </div>

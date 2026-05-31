@@ -7,21 +7,51 @@ import { Globe, X } from "lucide-react";
  * which reads Vercel's x-vercel-ip-country header; we never nag
  * visitors inside China.
  *
- * Dismissal is persisted in localStorage so the modal doesn't reappear.
- * ESC and backdrop-click both count as "stay on the Chinese site".
+ * Dismissal is persisted in localStorage with a 30-day TTL — after
+ * that, a non-CN visitor sees the prompt again (in case their context
+ * changed: travel, network, etc.). ESC and backdrop-click both count
+ * as "stay on the Chinese site".
  */
 
 // v3 marks the UI overhaul from sticky banner → centered modal. Users who
 // dismissed the v2 banner get one re-prompt under the new presentation.
 const STORAGE_KEY = "sienovo-locale-switch-v3";
 const INTL_URL = "https://intl.sienovo.cn";
+const DISMISS_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+/** True if the user has dismissed within the TTL window. */
+function isRecentlyDismissed(): boolean {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return false;
+
+  // Legacy values stored as "1" (no timestamp). Migrate them to a fresh
+  // dismissal so the 30-day clock starts from this visit — polite to
+  // users who dismissed under the old "permanent" behavior.
+  if (raw === "1") {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now() }));
+    return true;
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as { ts?: number };
+    const ts = typeof parsed.ts === "number" ? parsed.ts : 0;
+    return Date.now() - ts < DISMISS_TTL_MS;
+  } catch {
+    // Corrupt entry — treat as no dismissal and overwrite below.
+    return false;
+  }
+}
+
+function recordDismissal() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now() }));
+}
 
 export default function LocaleSwitchModal() {
   const [show, setShow] = useState(false);
   const primaryButtonRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    if (localStorage.getItem(STORAGE_KEY)) return;
+    if (isRecentlyDismissed()) return;
 
     let cancelled = false;
     (async () => {
@@ -66,12 +96,12 @@ export default function LocaleSwitchModal() {
   }, [show]);
 
   function dismiss() {
-    localStorage.setItem(STORAGE_KEY, "1");
+    recordDismissal();
     setShow(false);
   }
 
   function goIntl() {
-    localStorage.setItem(STORAGE_KEY, "1");
+    recordDismissal();
     window.location.href = INTL_URL;
   }
 
