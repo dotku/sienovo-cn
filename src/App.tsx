@@ -1,5 +1,5 @@
 import { Analytics } from "@vercel/analytics/react";
-import LocaleBanner from "./components/LocaleBanner";
+import LocaleSwitchModal from "./components/LocaleSwitchModal";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import Solutions from "./components/Solutions";
@@ -13,7 +13,7 @@ function App() {
   return (
     <div className="min-h-screen bg-white">
       <Analytics />
-      <LocaleBanner />
+      <LocaleSwitchModal />
       <Header />
       <Hero />
       <Solutions />
