@@ -99,7 +99,7 @@ export default function LocaleSwitchModal() {
           <X className="w-5 h-5" />
         </button>
 
-        <div className="bg-gradient-to-br from-red-600 to-red-700 text-white px-6 py-8 text-center">
+        <div className="bg-gradient-to-br from-blue-700 to-blue-800 text-white px-6 py-8 text-center">
           <div className="mx-auto w-14 h-14 rounded-full bg-white/15 flex items-center justify-center mb-4">
             <Globe className="w-8 h-8" aria-hidden="true" />
           </div>
@@ -108,7 +108,7 @@ export default function LocaleSwitchModal() {
           </h2>
           <p
             id="locale-switch-desc"
-            className="text-red-50 text-sm leading-relaxed"
+            className="text-blue-50 text-sm leading-relaxed"
           >
             Switch to our English site for international product specs,
             pricing in USD, and global sales & support.
@@ -123,7 +123,7 @@ export default function LocaleSwitchModal() {
               e.preventDefault();
               goIntl();
             }}
-            className="block w-full text-center bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-3 rounded-lg transition-colors shadow-sm"
+            className="block w-full text-center bg-blue-700 hover:bg-blue-800 text-white font-semibold px-4 py-3 rounded-lg transition-colors shadow-sm"
           >
             Visit intl.sienovo.cn →
           </a>
