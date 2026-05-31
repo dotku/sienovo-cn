@@ -10,7 +10,10 @@ import { Globe, X } from "lucide-react";
  * Dismissal is persisted in localStorage so the banner doesn't reappear.
  */
 
-const STORAGE_KEY = "sienovo-locale-banner-v1";
+// Bumped to v2 when we switched from browser-language to IP-based geo —
+// invalidates old dismissals so non-CN visitors get re-prompted under the
+// more accurate detection.
+const STORAGE_KEY = "sienovo-locale-banner-v2";
 const INTL_URL = "https://intl.sienovo.cn";
 
 export default function LocaleBanner() {
