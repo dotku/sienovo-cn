@@ -11,9 +11,11 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
-            <div className="text-2xl font-bold text-white flex items-center mb-6">
-              <span className="text-3xl mr-2">信迈智科</span>
-              <span className="text-blue-400">SIENOVO</span>
+            <div className="font-bold text-white flex flex-wrap items-baseline gap-x-2 mb-6">
+              <span className="text-xl sm:text-2xl lg:text-3xl">信迈智科</span>
+              <span className="text-base sm:text-lg lg:text-2xl text-blue-400 tracking-wide">
+                SIENOVO
+              </span>
             </div>
             <p className="text-gray-400 mb-6">
               深圳信迈智科 SIENOVO
