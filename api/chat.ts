@@ -21,11 +21,12 @@ const baseURL = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN
 
 const client = new OpenAI({ apiKey, baseURL });
 
-// "provider/model" via the gateway. xai/grok-4-fast is the current fast
-// Grok model; "grok-4-fast" is what the direct xAI endpoint expects.
+// "provider/model" via the gateway. xai/grok-4.1-fast-non-reasoning is
+// the current fast non-reasoning Grok — ideal for chatbot latency.
+// Direct-xAI fallback uses the equivalent without the prefix.
 const MODEL = baseURL.includes("ai-gateway.vercel.sh")
-  ? "xai/grok-4-fast"
-  : "grok-4-fast";
+  ? "xai/grok-4.1-fast-non-reasoning"
+  : "grok-4.1-fast-non-reasoning";
 
 const SYSTEM_PROMPT = `你是信迈智科的政企方案客服代表，专门解答关于我们公司的政府和企业解决方案的问题。
 我们的主要产品和服务包括：
