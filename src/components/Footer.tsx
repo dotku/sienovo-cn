@@ -1,4 +1,5 @@
 import {
+  Globe,
   Mail,
   MapPin,
   MessageSquare as Wechat,
@@ -164,7 +165,14 @@ const Footer = () => {
           <p className="text-gray-500 mb-4 md:mb-0">
             2025 信迈智科 SIENOVO 保留所有权利 粤 ICP 备 18109958 号
           </p>
-          <div className="flex flex-wrap justify-center md:justify-end space-x-6">
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-2">
+            <a
+              href="https://intl.sienovo.cn"
+              className="flex items-center text-gray-400 hover:text-white transition-colors"
+            >
+              <Globe className="h-4 w-4 mr-1.5" aria-hidden="true" />
+              国际版 (Sienovo Global)
+            </a>
             <a
               href="#"
               className="text-gray-500 hover:text-white transition-colors"
