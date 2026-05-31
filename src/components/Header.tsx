@@ -1,21 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  // Track which top-level submenu is open on touch (tablet/mobile have no
+  // hover). null = none. Closed by tapping outside or scrolling.
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
+      setIsScrolled(window.scrollY > 10);
+      setOpenSubmenu(null);
+    };
+
+    const handlePointerDown = (e: PointerEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenSubmenu(null);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("pointerdown", handlePointerDown);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("pointerdown", handlePointerDown);
+    };
   }, []);
 
   const navItems = [
@@ -53,62 +64,101 @@ const Header = () => {
       }`}
     >
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
-          <div className="flex items-center">
-            <div className="text-2xl font-bold flex items-center">
+        <div className="flex justify-between items-center py-3 md:py-4 gap-3">
+          <div className="flex items-center shrink-0">
+            <a href="#" className="font-bold flex items-baseline">
               <span
-                className={`text-3xl mr-2 ${
+                className={`text-xl sm:text-2xl lg:text-3xl mr-1.5 lg:mr-2 ${
                   isScrolled ? "text-gray-800" : "text-white"
                 }`}
               >
                 信迈智科
               </span>
               <span
-                className={`${isScrolled ? "text-gray-800" : "text-white"}`}
+                className={`text-base sm:text-lg lg:text-2xl tracking-wide ${
+                  isScrolled ? "text-gray-800" : "text-white"
+                }`}
               >
                 SIENOVO
               </span>
-            </div>
+            </a>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <div key={item.name} className="relative group">
-                <a
-                  href={item.href}
-                  className={`${
-                    isScrolled
-                      ? "text-gray-800 hover:text-blue-700"
-                      : "text-white hover:text-blue-200"
-                  } font-medium flex items-center`}
-                >
-                  {item.name}
-                  {item.submenu && <ChevronDown className="ml-1 h-4 w-4" />}
-                </a>
+          {/* Tablet+Desktop Navigation */}
+          <nav
+            ref={navRef}
+            className="hidden md:flex items-center space-x-4 lg:space-x-8"
+          >
+            {navItems.map((item) => {
+              const isOpen = openSubmenu === item.name;
+              return (
+                <div key={item.name} className="relative group">
+                  <a
+                    href={item.href}
+                    onClick={(e) => {
+                      // On touch devices the first tap should open the submenu
+                      // rather than navigating, so submenu items become reachable.
+                      if (item.submenu && !isOpen) {
+                        e.preventDefault();
+                        setOpenSubmenu(item.name);
+                      }
+                    }}
+                    aria-expanded={item.submenu ? isOpen : undefined}
+                    aria-haspopup={item.submenu ? "menu" : undefined}
+                    className={`${
+                      isScrolled
+                        ? "text-gray-800 hover:text-blue-700"
+                        : "text-white hover:text-blue-200"
+                    } font-medium flex items-center text-sm lg:text-base whitespace-nowrap`}
+                  >
+                    {item.name}
+                    {item.submenu && (
+                      <ChevronDown
+                        className={`ml-1 h-4 w-4 transition-transform ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    )}
+                  </a>
 
-                {item.submenu && (
-                  <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md overflow-hidden transform opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-left z-50">
-                    <div className="py-2">
-                      {item.submenu.map((subItem) => (
-                        <a
-                          key={subItem.name}
-                          href={subItem.href}
-                          className="block px-4 py-2 text-sm text-gray-800 hover:bg-blue-50 hover:text-blue-700"
-                        >
-                          {subItem.name}
-                        </a>
-                      ))}
+                  {item.submenu && (
+                    <div
+                      className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md overflow-hidden origin-top-left z-50 transition-all duration-200
+                        ${
+                          isOpen
+                            ? "opacity-100 scale-100 pointer-events-auto"
+                            : "opacity-0 scale-95 pointer-events-none"
+                        }
+                        group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto`}
+                    >
+                      <div className="py-2">
+                        {item.submenu.map((subItem) => (
+                          <a
+                            key={subItem.name}
+                            href={subItem.href}
+                            onClick={() => setOpenSubmenu(null)}
+                            className="block px-4 py-2 text-sm text-gray-800 hover:bg-blue-50 hover:text-blue-700"
+                          >
+                            {subItem.name}
+                          </a>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              );
+            })}
           </nav>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <a href="#contact" className="text-white hover:text-blue-200">
-              <button className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition-colors">
+          <div className="hidden md:flex items-center shrink-0">
+            <a href="#contact">
+              <button
+                className={`px-3 py-1.5 lg:px-4 lg:py-2 rounded-md transition-colors text-sm lg:text-base font-medium whitespace-nowrap ${
+                  isScrolled
+                    ? "bg-blue-700 text-white hover:bg-blue-800"
+                    : "bg-white/15 text-white hover:bg-white/25 backdrop-blur-sm border border-white/30"
+                }`}
+              >
                 联系我们
               </button>
             </a>
@@ -118,7 +168,12 @@ const Header = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-white hover:text-blue-200 focus:outline-none"
+              aria-label="Toggle navigation"
+              className={`focus:outline-none ${
+                isScrolled
+                  ? "text-gray-800 hover:text-blue-700"
+                  : "text-white hover:text-blue-200"
+              }`}
             >
               {isMenuOpen ? (
                 <X className="h-6 w-6" />

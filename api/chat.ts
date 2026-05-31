@@ -4,29 +4,22 @@ import OpenAI from "openai";
 /**
  * Sienovo chatbot, routed through the Vercel AI Gateway.
  *
- * On Vercel infra, AI_GATEWAY_API_KEY is auto-injected (OIDC) — no need
- * to set a key for production. For local dev, set AI_GATEWAY_API_KEY in
- * .env.local. We also fall back to XAI_API_KEY for backward compat with
- * the original direct-xAI setup.
+ * Set AI_GATEWAY_API_KEY in .env.local for local dev. On Vercel infra,
+ * the same env var (or auto-injected VERCEL_OIDC_TOKEN) is used.
+ *
+ * Direct xAI (api.x.ai) is intentionally NOT used — keys provisioned
+ * via Vercel share the same team budget as the gateway, so it's not a
+ * meaningful backup. The gateway's own multi-provider fallback (xAI →
+ * Vertex AI hosting Grok → others) is the resilience layer.
  */
-const apiKey =
-  process.env.AI_GATEWAY_API_KEY ||
-  process.env.VERCEL_OIDC_TOKEN ||
-  process.env.XAI_API_KEY ||
-  "";
+const apiKey = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN || "";
 
-const baseURL = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN
-  ? "https://ai-gateway.vercel.sh/v1"
-  : "https://api.x.ai/v1";
+const client = new OpenAI({
+  apiKey,
+  baseURL: "https://ai-gateway.vercel.sh/v1",
+});
 
-const client = new OpenAI({ apiKey, baseURL });
-
-// "provider/model" via the gateway. xai/grok-4.1-fast-non-reasoning is
-// the current fast non-reasoning Grok — ideal for chatbot latency.
-// Direct-xAI fallback uses the equivalent without the prefix.
-const MODEL = baseURL.includes("ai-gateway.vercel.sh")
-  ? "xai/grok-4.1-fast-non-reasoning"
-  : "grok-4.1-fast-non-reasoning";
+const MODEL = "xai/grok-4.1-fast-non-reasoning";
 
 const SYSTEM_PROMPT = `你是信迈智科的政企方案客服代表，专门解答关于我们公司的政府和企业解决方案的问题。
 我们的主要产品和服务包括：
@@ -80,7 +73,6 @@ export default async function handler(
       message: err.message,
       data: err.response?.data,
       model: MODEL,
-      baseURL,
     });
     return response.status(500).json({
       error: "An error occurred while processing your request",
