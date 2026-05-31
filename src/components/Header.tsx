@@ -153,14 +153,14 @@ const Header = () => {
           <div className="hidden md:flex items-center shrink-0 gap-2 lg:gap-3">
             <a
               href="https://intl.sienovo.cn"
-              aria-label="Switch to English site"
+              aria-label="Visit Sienovo Global — international product lineup"
               className={`text-sm lg:text-base font-medium whitespace-nowrap px-2 py-1 rounded transition-colors ${
                 isScrolled
                   ? "text-gray-700 hover:text-blue-700"
                   : "text-white/90 hover:text-white"
               }`}
             >
-              EN
+              国际版
             </a>
             <a href="#contact">
               <button
@@ -227,7 +227,7 @@ const Header = () => {
               href="https://intl.sienovo.cn"
               className="block px-3 py-2 text-base font-medium text-gray-900 hover:bg-blue-50 hover:text-blue-700 rounded-md border-t border-gray-100 mt-2 pt-3"
             >
-              English (intl.sienovo.cn) →
+              国际版 — Sienovo Global (海外业务) →
             </a>
             <div className="pt-4 flex justify-between items-center">
               <a href="#contact">

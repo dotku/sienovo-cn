@@ -134,14 +134,16 @@ export default function LocaleSwitchModal() {
             <Globe className="w-8 h-8" aria-hidden="true" />
           </div>
           <h2 id="locale-switch-title" className="text-2xl font-bold mb-2">
-            Visiting from outside China?
+            Looking for our international business?
           </h2>
           <p
             id="locale-switch-desc"
             className="text-blue-50 text-sm leading-relaxed"
           >
-            Switch to our English site for international product specs,
-            pricing in USD, and global sales & support.
+            Sienovo Global is a separate product lineup — edge AI computing
+            for industrial video analytics, with USD pricing and worldwide
+            sales & support. The Chinese site here covers our government
+            and enterprise software solutions.
           </p>
         </div>
 
@@ -155,14 +157,14 @@ export default function LocaleSwitchModal() {
             }}
             className="block w-full text-center bg-blue-700 hover:bg-blue-800 text-white font-semibold px-4 py-3 rounded-lg transition-colors shadow-sm"
           >
-            Visit intl.sienovo.cn →
+            Visit Sienovo Global →
           </a>
           <button
             type="button"
             onClick={dismiss}
             className="block w-full text-center text-gray-600 hover:text-gray-900 font-medium px-4 py-2.5 rounded-lg transition-colors"
           >
-            Stay on Chinese site (留在中文站)
+            Stay on Sienovo China (留在中文站)
           </button>
         </div>
       </div>
